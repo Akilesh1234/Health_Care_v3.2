@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Complaint App With Geo-Location</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <!-- jQuery -->
+  <link rel="stylesheet" type="text/css" href="js/jquery.mobile-1.4.5.css">
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery.mobile-1.4.5.js"></script>
+  <script src="cordova.js"></script>
+  <!-- FILES FOR LEAFLET MAP -->
+  <link rel="stylesheet" href="leaflet/leaflet.css" />
+  <script src="leaflet/leaflet.js"></script>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <style type="text/css">
+    .gallery,
+    .responsive {
+      box-sizing: border-box;
+    }
+
+    .gallery {
+      border-radius: 90px solid black;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 75px;
+      transform-origin: 0 0;
+      transition: transform .25s, visibility .25s ease-in;
+    }
+
+    /* The Transformation */
+    .gallery:hover img {
+      transform: scale(2);
+    }
+
+    .des {
+      padding: 10px;
+      text-align: center;
+      font-weight: 745;
+    }
+
+    .responsive {
+      padding: 0 6px;
+      float: left;
+      width: 25%;
+    }
+
+    h1 {
+      color: white;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .responsive {
+        width: 50%;
+        margin: 6px 0;
+      }
+    }
+
+    @media only screen and (max-width: 300px) {
+      .responsive {
+        width: 100%
+      }
+    }
+
+    .collap .ui-collapsible-heading-collapsed>.ui-collapsible-heading-toggle {
+      background: #41f4af !important;
+      box-sizing: border-box;
+    }
+
+    .collap .ui-collapsible-heading-toggle {
+      background: #41c4f4 !important;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+  <div data-role="page" id="pageone" data-theme="a">
+
+    <div data-role="header" data-position="fixed" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+    <!-- /header -->
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+
+      <!--BMI-->
+      <div class="responsive">
+        <div class="gallery">
+          <a href="#pagethree" data-transition="slideup"><img src="images/bmi1.jpg" alt="BMI" width="275" height="275"></a>
+          <div class="des">BMI</div>
+        </div>
+      </div>
+
+
+      <!--Conversion-->
+      <div class="responsive">
+        <div class="gallery">
+          <a href="#pagefour" data-transition="slidefade"><img src="images/glucoseconversion.png" alt="convert" width="275" height="275"></a>
+          <div class="des">Conversion</div>
+        </div>
+      </div>
+
+      <!--Glucose-->
+      <div class="responsive">
+        <div class="gallery">
+          <a href="#pageeight" data-transition="slidefade"><img src="images/glucosecheck.png" alt="glucose" width="275" height="275"></a>
+          <div class="des">Glucose Check</div>
+        </div>
+      </div>
+
+
+      <!--Blood Pressure-->
+      <div class="responsive">
+        <div class="gallery">
+          <a href="#pagetwelve" data-transition="slidefade"><img src="images/bptest.png" alt="bp" width="275" height="275"></a>
+          <div class="des">Blood Pressure</div>
+        </div>
+      </div>
+
+
+
+
+      <!--Blood Pressure-->
+      <div class="responsive">
+        <div class="gallery">
+          <a href="#pagethirteen" data-transition="slidefade"><img src="images/faqs.jpg" alt="faqs" width="275" height="275"></a>
+          <div class="des">FACQ</div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- /pageone -->
+  <div data-role="page" id="pagetwo">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <div data-role="main" class="ui-content">
+      <div id="mapid" style="width:500px;height:500px;"></div>
+    </div>
+
+    <!--footer pagetwo-->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pagefive" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagetwo" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- /pagetwo -->
+
+  <div data-role="page" id="pagethree">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Content pagethree-->
+    <div data-role="main" class="ui-content">
+      <h2>BMI Calculator</h2>
+            <label for="num-1">Weight(in kg):</label>
+            <input type="number" data-clear-btn="true" name="num-1" id="num-1" value="" step="0.01" required min="0" max="700">
+            <label for="num-2">Height(in m)</label>
+            <input type="number" data-clear-btn="true" name="num-2" id="num-2" value="" step="0.01" min="0" max="3">
+      <button id="btn_bmi" class="ui-btn">Calculate BMI</button>
+      <label>Your BMI is:</label><b id="result"></b>
+    </div>
+
+    <!--footer pagethree-->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pageone" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagetwo" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- /pagethree -->
+
+  <div data-role="page" id="pagefour">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Content pagefour-->
+    <div data-role="main" class="ui-content">
+      <h2>Glucose Converter</h2>
+      <button class="ui-btn ui-icon-carat-r ui-btn-icon-left" onclick="window.location.href = '#pagesix';">mmol/L to mg/dl</button>
+            <label for="num-mg">Glucose test in mg/dl</label>
+            <input type="number" data-clear-btn="true" name="num-mg" id="num-mg" value="" min="1" max="900">
+      <label>Your glucose test(in mmol/L) is:</label><b id="mgresult"></b>
+      <button id="btn_mg" class="ui-btn">mg/dl to mmol/L</button>
+    </div>
+
+    <!--footer pagefour-->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pageone" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- /pagefour -->
+
+
+  <div data-role="page" data-dialog="true" id="pagefive">
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>More Services</h1>
+    </div>
+
+    <div role="main" class="ui-content">
+      <button class="ui-btn ui-icon-bars ui-btn-icon-left" data-transition="slidedown" onclick="window.location.href = '#pagenine';" style="background-color: #ffd700;">Advices</button>
+      <button class="ui-btn ui-icon-search ui-btn-icon-left" onclick="window.location.href = '#pagetwo';maplocation();" style="background-color: #ffd700;">Nearest Hospitals</button>
+      <button class="ui-btn ui-icon-carat-r ui-btn-icon-left" onclick="window.location.href = '#pageseven';" style="background-color: #ffd700;">Charts</button>
+      <button class="ui-btn ui-icon-gear ui-btn-icon-left" onclick="window.location.href = '#pageeleven';" style="background-color: #ffd700;">Help</button>
+
+      <!--More Info Button-->
+      <button class="ui-btn ui-icon-back ui-btn-icon-left" onclick="window.location.href = '#pageone';" style="background-color: #ffd700;">Back to home</button>
+    </div>
+  </div>
+  <!-- /pagefive -->
+
+
+  <div data-role="page" id="pagesix">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+      <h2>Glucose Converter</h2>
+      <button class="ui-btn ui-icon-carat-l ui-btn-icon-left" onclick="window.location.href = '#pagefour';">mg/dl to mmol/L</button>
+            <label for="num-mmol">Glucose test in mg/dl</label>
+            <input type="number" data-clear-btn="true" name="num-mmol" id="num-mmol" value="" step="0.01" min="0.06" max="50">
+      <label>Your glucose test(in mg/dl) is:</label><b id="mmolresult"></b>
+      <button id="btn_mmol" class="ui-btn">mmol/L to mg/dl</button>
+    </div>
+
+    <!-- footer pagesix -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pagefour" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- /pagesix -->
+
+  <div data-role="page" id="pageseven">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-responsive">
+      <div id="chartContainer" class="mobilescreen" style="height: 300px; width: 100%;"></div>
+      <br><br><br>
+      <div id="chartContainer1" class="mobilescreen" style="height: 300px; width: 100%;"></div>
+      <br><br><br>
+      <div id="barchart_material" style="width: 360px; height: 350px"></div>
+    </div>
+
+
+    <!-- footer pageseven -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pagefive" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- end of pageseven -->
+
+  <div data-role="page" id="pageeight">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+      <h2>Glucose Checker</h2>
+      <form method="post" onsubmit="return submitForm()">
+            <fieldset data-role="controlgroup" data-type="vertical">
+                  <input type="radio" name="diet" id="radio1" value="fasting" checked="checked">
+                  <label for="radio1">Fasting</label>
+                  <input type="radio" name="diet" id="radio2" value="after">
+                  <label for="radio2">After Eating</label>
+                  <input type="radio" name="diet" id="radio3" value="aftertwo">
+                  <label for="radio3">2-3 hours after eating</label>
+
+          <label for="glu1">Enter your Glucose test(in mg/dl)</label>
+                <input type="number" data-clear-btn="false" name="glu1" id="glu1" value="" min="40" max="350">
+          <label>Your test is:</label><b id="gluresult"></b>
+          <button id="btn_glu" class="ui-btn">Check My Glucose</button>
+              </fieldset>
+      </form>
+    </div>
+
+
+    <!-- footer pageeight -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pageone" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- end of pageeight -->
+
+  <div data-role="page" id="pagenine">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+      <h2>Medical Advices</h2>
+      <h3>Tips to reduce weight</h3>
+      <p>There are many ways to lose a lot of weight fast</p>
+      <p>However, most of them will mae you hungry and unsatisfied</p>
+      <p>Below are some tips that will make you lose weight quickly, without hunger.</p>
+      <ul>
+        <li>Cut Back on Sugars and Starches</li>
+        <li>Eat Protein, Fat and Vegetables</li>
+        <div data-role="collapsible" class="collap">
+          <h1>Check protein sources</h1>
+          <li><strong>Meat:</strong>Beef, Chicken, pork, lamb, etc.</li>
+          <li><strong>Fish and Seafood:</strong>Salmon, trout, shrimp, etc.</li>
+          <li><strong>Eggs:</strong>Whole eggs with the yolk are best.</li>
+          <li><strong>Dairy Products:</strong>Like milk, yoghurt and cheese.</li>
+          <li><strong>Soy Products:</strong>Like tofu.</li>
+          <li><strong>Beans and legumes:</strong>Such as lentils and chickpeas.</li>
+          <li><strong>Grain and Cereal Products:</strong>These are generally not as high in protein as meat and meat alternative products..</li>
+        </div>
+        <li>Lift Weights 3 Times Per Week</li>
+      </ul>
+      <h3>Natural ways to lower your blood pressure</h3>
+      <p>High blood pressure is a dangerous condition that can damage your heart. It affects one in three people in the US and 1 billion people worldwide.</p>
+      <p>Here are some ways to combat high blood pressure.</p>
+      <ul>
+        <li>Walk and excercise regularly</li>
+        <li>Reduce your sodium intake</li>
+        <li>Drink less alcohol</li>
+        <li>Eat more potassium-rich foods</li>
+        <li>Cut back on caffeine</li>
+        <div data-role="collapsible" class="collap">
+          <h1>Some more ways</h1>
+          <li>Learn to manage stress</li>
+          <li>Eat dark chocolate or cocoa</li>
+          <li>Lose weight</li>
+          <li>Quit smoking</li>
+          <li>Cut added sugar and refined carbs</li>
+          <li>Eat berries</li>
+          <li>Try meditation or deep breathing</li>
+          <li>Eat calcium-rich foods</li>
+          <li>Take natural supplements</li>
+          <li>Eat foods rich in magnesium</li>
+        </div>
+      </ul>
+      <h2>Ways to lower blood sugar levels</h2>
+      <p>High blood sugar occurs when your body can't effectively transport sugar from blood into cells. When left unchecked, this can lead to diabetes. One study from 2012 reported that 12-14% of US adults had type 2 diabetes, while 37-38% were
+        classified as pre-diabetic</p>
+      <p>Here are some ways to combat high sugar levels.</p>
+      <ul>
+        <li>Exercise Regularly</li>
+        <li>Control your carb intake</li>
+        <li>Increase your fiber intake</li>
+        <li>Drink water and stay hydrated</li>
+        <li>Implement portion control</li>
+        <div data-role="collapsible" class="collap">
+          <h1>Some more ways</h1>
+          <li>Choose foods with a low glycemic index</li>
+          <li>Control stress levels</li>
+          <li>Monitor your blood sugar levels</li>
+          <li>Get enough quality sleep</li>
+          <li>Eat foods rich in chromium and magnesium</li>
+          <li>Try Apple Cider Vinegar</li>
+          <li>Experiment with cinnamon extract</li>
+          <li>Try berberine</li>
+          <li>Eat fenugreek seeds</li>
+          <li>Lose some weight</li>
+        </div>
+      </ul>
+
+    </div>
+
+
+    <!-- footer pagenine -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pagefive" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- end of pagenine -->
+
+  <div data-role="page" id="pageten">
+    <div data-role="header">
+      <h2>Glucose history</h2>
+      <div id="output">
+        <ul data-role="listview" id="resultList">
+      </div>
+
+      <!-- footer pageten -->
+      <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#pageeight" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+            <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+            <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+          </ul>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+  <div data-role="page" id="pageeleven">
+    <!--/header 1-->
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+      <h2>Help</h2>
+      <h3>Having Problem Using the app?</h3>
+      <p>Please follow the instructions below on how to get started.</p>
+
+
+      <div>
+
+        <h3>A. The BMI Calculator</h3>
+        <p>Click on the BMI Logo on the menu and you will be redirected to the BMI Calculator page.</p>
+        <p>BMI CALCULATOR INSTRUCTIONS</p>
+        <ul>
+          <li>1. Just below the 'Weight(in kg)' label you will find a text field in which only numbers are permitted.</li>
+          <li>2. Input your weight in figures. (For example, 60. Which represents 60kg)</li>
+          <li>3. Next step, below the 'Height(in m)' label you will find a text field in which only numbers are permitted.</li>
+          <li>4. Input your height in metres. (For example, 1.70 Which represents 1 metre and 70 centimetres)</li>
+          <li>5. Finally, click on the 'Calculate BMI' button and your result will be displayed below. (Your BMI is: )</li>
+        </ul>
+
+      </div>
+
+      <div>
+        <h3>B. The Glucose Checker</h3>
+        <p>Click on the Glucose Check Logo on the menu and you will be redirected to the Glucose Checker page.</p>
+        <p>GLUCOSE CHECKER INSTRUCTIONS</p>
+        <ul>
+          <li>1. Three radio buttons will be illustrated on the page: 'Fasting', 'After Eating' and '2-3 hours after eating'. The first radio button will be automatically checked for you by default.</li>
+          <li>2. Select which option is appropriate for your case.</li>
+          <li>3. Next step, input your glucose reading in the text field below the radio buttons.</li>
+          <li>4. Click on the 'Check My Glucose' button.</li>
+          <li>5. Finally, the app will tell you if your glucose level is normal or not.</li>
+        </ul>
+
+      </div>
+
+      <div>
+
+        <h3>C. Conversion</h3>
+        <p>Click on the Conversion Logo on the menu and you will be redirected to the Glucose Converter page.</p>
+        <p>GLUCOSE CONVERTER INSTRUCTIONS</p>
+        <ul>
+          <li>1. </li>
+          <li>2. </li>
+          <li>3. </li>
+          <li>4. </li>
+          <li>5. </li>
+        </ul>
+
+      </div>
+
+      <div>
+
+        <h3>D. Blood Pressure</h3>
+        <p>Click on the Blood Pressure Logo on the menu and you will be redirected to the Blood Pressure page.</p>
+        <p>BLOOD PRESSURE INSTRUCTIONS</p>
+        <ul>
+          <li>1. </li>
+          <li>2. </li>
+          <li>3. </li>
+          <li>4. </li>
+          <li>5. </li>
+        </ul>
+
+      </div>
+
+
+      <div>
+        <h3>E. Frequently Asked Questions</h3>
+        <p>Click on the FACQ Logo on the menu and you will be redirected to the Frequently Asked Questions page.</p>
+        <p>FACQ INSTRUCTIONS</p>
+        <ul>
+          <li>1. </li>
+          <li>2. </li>
+          <li>3. </li>
+          <li>4. </li>
+          <li>5. </li>
+        </ul>
+
+      </div>
+
+    </div>
+
+
+    <!-- footer pageeleven -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pagefive" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- end of pageeleven -->
+
+
+
+  <div data-role="page" id="pagetwelve">
+
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+      <h2>Blood Pressure</h2>
+            <label for="bpage">Enter your age:</label>
+            <input type="number" data-clear-btn="true" name="bpage" id="bpage" value="" min="5" max="125" required>
+      <label for="systolic">Enter your systolic test(in mmHg):</label>
+      <input type="number" data-clear-btn="true" name="systolic" id="systolic" value="" min="50" max="260" required>
+      <label for="diastolic">Enter your diastolic(in mmHg):</label>
+      <input type="number" data-clear-btn="true" name="diastolic" id="diastolic" value="" min="40" max="150">
+           
+      <button id="btn_bp" class="ui-btn">Calculate BP</button>
+      <label>Your BP is:</label><b id="bpresult"></b>
+    </div>
+
+    <!-- footer pagetwelve -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pageone" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+  <div data-role="page" id="pagethirteen">
+
+    <div data-role="header" style="background-color: #39ac73;">
+      <h1>Health Care</h1>
+    </div>
+
+    <!--Main Content-->
+    <div data-role="main" class="ui-content">
+      <h2>Frequently Asked Questions</h2>
+      <h4>Find the answer to your questions.</h4>
+
+    </div>
+
+    <div data-role="collapsible" class="collap">
+      <h1>What does BMI stand for?</h1>
+      <li>Body mass index (BMI) is a measure of body fat based on height and weight that applies to adult men and women.</li>
+      <li>Want to have a quick BMI test? Click on this link:<a href="#pagethree">BMI Calculator</a></li>
+    </div>
+
+    <div data-role="collapsible" class="collap">
+      <h1>What are blood sugar level for the majority of healthy individuals?</h1>
+      <li>Between 4.0 to 5.4 mmol/L (72 to 99 mg/dL) when fasting</li>
+      <li>Up to 7.8 mmol/L (140 mg/dL) 2 hours after eating</li>
+      <li>Want to check if you are in the normal range? Click on this link:<a href="#pageeight">Glucose Checker</a></li>
+    </div>
+
+    <div data-role="collapsible" class="collap">
+      <h1>What are blood sugar level for people with diabetes?</h1>
+      <li>Before meals: 4 to 7 mmol/L for people with type 1 or type 2 diabetes</li>
+      <li>After meals: under 9 mmol/L for people with type 1 diabetes and under 8.5mmol/L for people with type 2 diabetes</li>
+      <li>Want to check if you are in the normal range? Click on this link:<a href="#pageeight">Glucose Checker</a></li>
+    </div>
+
+
+    <div data-role="collapsible" class="collap">
+      <h1>What does mmol/L and mg/dL stand for?</h1>
+      <li>mmol/LInternational standard unit for measuring the concentration of glucose in the blood - also known as millimolar (mM). This unit is used in the UK.: Millimoles per litre</li>
+      <li>mg/dLUnit for measuring concentration of glucose in the blood in the USA - milligrams per decilitre.: Milligrams per 100 millilitres</li>
+    </div>
+
+
+    <div data-role="collapsible" class="collap">
+      <h1>Whats the difference between mmol/L and mg/dL?</h1>
+      <li>Both sets of units are used to measure blood sugar levels and both give a measurement of the concentration of glucose in the blood, albeit in slightly different ways.</li>
+      <li>mmol/L gives the molarity, which is the number of molecules of a substance within a specified volume, in this case within 1 litre.</li>
+      <li>mg/dL gives the concentration by the ratio of weight to volume, in this case milligrams per decilitre.</li>
+      <li>mmol/L is the most common measurement used in the UK with mg/dL predominantly used in the USA and continental Europe.</li>
+      <li>Want to try the conversion? Click on this link:<a href="#pagefour">Glucose Conversion</a></li>
+    </div>
+
+
+
+
+    <!-- footer pagethirteen -->
+    <div data-role="footer" data-position="fixed">
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#pageone" data-icon="back" style="background-color: #39ac73;">Back</a></li>
+          <li><a href="#pageone" data-icon="home" style="background-color: #39ac73;">Home</a></li>
+          <li><a href="#pagefive" data-icon="grid" style="background-color: #39ac73;">More</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#btn_bmi').click(function() {
+        var n1 = ($('#num-1').val());
+        var n2 = ($('#num-2').val());
+        var n3 = n2 * n2;
+
+        if ((n1 <= 0 && n1 >= 700) && (n2 <= 0 && n2 >= 3)) {
+          $('#result').html("Invalid range of values");
+        } else {
+          $('#result').html(Math.round((n1) / (n3)), 2);
+        }
+      });
+      $('#btn_mg').click(function() {
+        var mg1 = ($('#num-mg').val());
+        var mg2 = (mg1 / 18).toFixed(2);
+        $('#mgresult').html(mg2);
+      });
+      $('#btn_mmol').click(function() {
+        var mmol1 = ($('#num-mmol').val());
+        var mmol2 = (mmol1 * 18).toFixed(0);
+        $('#mmolresult').html(mmol2);
+      });
+      $('#btn_glu').click(function() {
+        var diet = $('input:radio[name=diet]:checked').val();
+        var num = ($('#glu1').val());
+
+        if (diet == "fasting") {
+          if (num >= 80 && num <= 100) {
+            $('#gluresult').html("Normal");
+            document.getElementById("gluresult").style.color = "green";
+          } else if (num >= 101 && num <= 125) {
+            $('#gluresult').html("Impaired Glucose");
+            document.getElementById("gluresult").style.color = "#f4e842";
+          } else if (num >= 126) {
+            $('#gluresult').html("Diabetic");
+            document.getElementById("gluresult").style.color = "red";
+          } else {
+            alert("Invalid entered value");
+          }
+        } else if (diet == "after") {
+          if (num >= 170 && num <= 200) {
+            $('#gluresult').html("Normal");
+            document.getElementById("gluresult").style.color = "green";
+          } else if (num >= 190 && num <= 230) {
+            $('#gluresult').html("Impaired Glucose");
+            document.getElementById("gluresult").style.color = "#f4e842";
+          } else if (num >= 220 && num <= 300) {
+            $('#gluresult').html("Diabetic");
+            document.getElementById("gluresult").style.color = "red";
+          } else {
+            alert("Invalid entered value");
+          }
+        } else {
+          if (num >= 120 && num <= 140) {
+            $('#gluresult').html("Normal");
+            document.getElementById("gluresult").style.color = "green";
+          } else if (num >= 140 && num <= 160) {
+            $('#gluresult').html("Impaired Glucose");
+            document.getElementById("gluresult").style.color = "#f4e842";
+          } else if (num >= 200) {
+            $('#gluresult').html("Diabetic");
+            document.getElementById("gluresult").style.color = "red";
+          } else {
+            alert("Invalid entered value");
+          }
+        }
+      });
+
+      $('#btn_bp').click(function() {
+        var sys = ($('#systolic').val());
+        var dia = ($('#diastolic').val());
+        var age = ($('#bpage').val());
+
+        if (age >= 5 && age <= 20) {
+          if ((sys >= 80 && sys <= 105) && (dia >= 73 && dia <= 85)) {
+            $('#bpresult').html("Low");
+            document.getElementById("bpresult").style.color = "red";
+          } else if ((sys >= 95 && sys <= 117) && (dia >= 65 && dia <= 77)) {
+            $('#bpresult').html("Normal");
+            document.getElementById("bpresult").style.color = "green";
+          } else if ((sys >= 110 && sys <= 120) && (dia >= 79 && dia <= 81)) {
+            $('#bpresult').html("High");
+            document.getElementById("bpresult").style.color = "red";
+          } else {
+            alert("Incorrect range of values");
+          }
+        } else if (age >= 21 && age <= 40) {
+          if ((sys >= 108 && sys <= 111) && (dia >= 75 && dia <= 78)) {
+            $('#bpresult').html("Low");
+            document.getElementById("bpresult").style.color = "red";
+          } else if ((sys >= 120 && sys <= 123) && (dia >= 79 && dia <= 82)) {
+            $('#bpresult').html("Normal");
+            document.getElementById("bpresult").style.color = "green";
+          } else if ((sys >= 132 && sys <= 135) && (dia >= 83 && dia <= 86)) {
+            $('#bpresult').html("High");
+            document.getElementById("bpresult").style.color = "red";
+          } else {
+            alert("Incorrect range of values");
+          }
+        } else if (age >= 41 && age <= 100) {
+          if ((sys >= 112 && sys <= 121) && (dia >= 79 && dia <= 83)) {
+            $('#bpresult').html("Low");
+            document.getElementById("bpresult").style.color = "red";
+          } else if ((sys >= 125 && sys <= 134) && (dia >= 84 && dia <= 87)) {
+            $('#bpresult').html("Normal");
+            document.getElementById("bpresult").style.color = "green";
+          } else if ((sys >= 137 && sys <= 147) && (dia >= 87 && dia <= 91)) {
+            $('#bpresult').html("High");
+            document.getElementById("bpresult").style.color = "red";
+          } else {
+            alert("Incorrect range of values");
+          }
+        } else {
+          alert("You have either wrongly input a range or submitted empty textboxes");
+        }
+
+      });
+    });
+    document.addEventListener("deviceready", onDeviceReady, false);
+    var db;
+
+    function onDeviceReady() {
+      db = window.openDatabase("myHealthDB", "1.0", "Simple Demo", 2 * 1024 * 1024);
+      db.transaction(createDB, errorCB, successCB);
+    }
+
+    function createDB(tx) {
+      //tx.executeSql('DROP TABLE IF EXISTS glucose3');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS glucose3(id INT, date TEXT, fasting TEXT, num INT)');
+    }
+
+    function errorCB(err) {
+      alert("SQL Error: " + err.code);
+    }
+
+    function successCB() {
+      alert("Database & Table Created");
+    }
+
+    function successQueryDB(tx) {
+      alert("Insert Successful");
+      tx.executeSql('SELECT * FROM glucose3', [], renderListCB, errorCB);
+    }
+
+    function insertDB(tx) {
+      var num = $("[name='glu1']").val();
+      var date = new Date();
+      var fasting = $('input:radio[name=diet]:checked').val();
+
+      var sql = 'INSERT INTO glucose3 (date,fasting,num) VALUES (?,?,?)';
+      tx.executeSql(sql, [date, fasting, num], successQueryDB, errorCB);
+    }
+
+    function renderListCB(tx, results) {
+      var htmlString = ' ';
+      var len = results.rows.length;
+
+      for (var i = 0; i < len; i++) {
+        htmlString += '<li>' + results.rows.item(i).date + '<br>' + results.rows.item(i).fasting + '<br>' + results.rows.item(i).num + '</li>';
+      }
+      $('#resultList').html(htmlString);
+      $('#resultList').listview('refresh');
+    }
+
+    function submitForm() {
+      onDeviceReady();
+      db.transaction(insertDB, errorCB);
+      $.mobile.changePage("#pageten", {
+        reverse: false,
+        transition: "slide"
+      });
+      return false;
+    }
+    google.charts.load('current', {
+      'packages': ['corechart']
+    });
+    google.charts.load('current', {
+      'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Age', 'M', 'W', 'All'],
+        ['19-24', 1, 3, 2],
+        ['25-34', 5, 6, 5.5],
+        ['35-44', 12, 16, 13],
+        ['45-54', 29, 28, 28.5],
+        ['55-64', 46, 43, 44],
+        ['65+', 51, 42, 53]
+      ]);
+
+      var options = {
+        chart: {
+          title: 'Diabetes statistics Mauritius',
+          subtitle: '% of Age-specific prevalence of diabetes 2015',
+        },
+        bars: 'vertical'
+        // Required for Material Bar Charts.
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('barchart_material'));
+
+      chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
+
+    window.onload = function() {
+
+      var chart = new CanvasJS.Chart("chartContainer", {
+        theme: "light2",
+        animationEnabled: true,
+        title: {
+          text: "Normal glucose range",
+        },
+        axisY: {
+          title: "Glucose range in mg/dl",
+          includeZero: false
+        },
+        data: [{
+          type: "rangeColumn",
+          toolTipContent: "{label}<br>Max: {y[0]}<br>Min: {y[1]}",
+          dataPoints: [{
+              label: "Fasting",
+              y: [100, 80]
+            },
+            {
+              label: "After Eating",
+              y: [200, 170]
+            },
+            {
+              label: "2-3 hours after eating",
+              y: [140, 120]
+            }
+          ]
+        }]
+      });
+      chart.render();
+      var chart = new CanvasJS.Chart("chartContainer1", {
+        animationEnabled: true,
+        title: {
+          text: "Normal BP range"
+        },
+        axisY: {
+          includeZero: false,
+        },
+        axisX: {
+          title: "Age",
+        },
+        toolTip: {
+          shared: true
+        },
+        legend: {
+          cursor: "pointer",
+          itemclick: toggleDataSeries
+        },
+        data: [{
+            type: "rangeColumn",
+            name: "Systolic",
+            showInLegend: true,
+            dataPoints: [{
+                label: "5-20",
+                y: [95, 117]
+              },
+              {
+                label: "21-40",
+                y: [120, 123]
+              },
+              {
+                label: "41-100",
+                y: [125, 134]
+              }
+            ]
+          },
+          {
+            type: "rangeColumn",
+            name: "Diastolic",
+            showInLegend: true,
+            dataPoints: [{
+                label: "5-20",
+                y: [65, 177]
+              },
+              {
+                label: "21-40",
+                y: [79, 82]
+              },
+              {
+                label: "41-100",
+                y: [83, 87]
+              }
+            ]
+          }
+        ]
+      });
+      chart.render();
+
+      function toggleDataSeries(e) {
+        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+          e.dataSeries.visible = false;
+        } else {
+          e.dataSeries.visible = true;
+        }
+        e.chart.render();
+      }
+    }
+
+
+    function maplocation() {
+      if (navigator.geolocation == undefined) {
+        alert("GeoLocation undefined");
+      } else {
+        alert("GeoLocation Available");
+        navigator.geolocation.getCurrentPosition(userLocated, locationError);
+
+        function userLocated(position) {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+          var mymap = L.map('mapid').setView([latitude, longitude], 11);
+          var ent = L.marker([-20.29383, 57.49642]).addTo(mymap);
+          var medisave = L.marker([-20.2687, 57.4767]).addTo(mymap);
+          var victoria = L.marker([-20.2783, 57.4767]).addTo(mymap);
+          var darne = L.marker([-20.31351, 57.51719]).addTo(mymap);
+          var moka = L.marker([-20.22220, 57.50374]).addTo(mymap);
+          var agarwal = L.marker([-20.24916, 57.49195]).addTo(mymap);
+          var mauricienne = L.marker([-20.23233, 57.49577]).addTo(mymap);
+          var wellkin = L.marker([-20.23331, 57.50358]).addTo(mymap);
+          var jeetoo = L.marker([-20.16903, 57.50210]).addTo(mymap);
+          var cnord = L.marker([-20.1308, 57.4971]).addTo(mymap);
+          var ssr = L.marker([-20.09685, 57.55938]).addTo(mymap);
+          var dor = L.marker([-20.0594, 57.6855]).addTo(mymap);
+          var nehru = L.marker([-20.4052, 57.5930]).addTo(mymap);
+          var mahebourg = L.marker([-20.4116, 57.7033]).addTo(mymap);
+          var marker = L.marker([latitude, longitude]).addTo(mymap);
+          var circle = L.circle([latitude, longitude], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 100
+          }).addTo(mymap);
+          circle.bindPopup("You may find the treasure around here");
+
+          marker.bindPopup("You are here").openPopup();
+          ent.bindPopup("ENT Hospital").openPopup();
+          medisave.bindPopup("Medisave Clinic").openPopup();
+          darne.bindPopup("Darne Clinic").openPopup();
+          moka.bindPopup("Moka Eye Hospital").openPopup();
+          agarwal.bindPopup("Dr.Agalwal's Eye Hospital").openPopup();
+          mauricienne.bindPopup("Mauricienne Clinic").openPopup();
+          wellkin.bindPopup("Wellkin").openPopup();
+          jeetoo.bindPopup("Dr. Jeetoo Hospital").openPopup();
+          cnord.bindPopup("Clinique du Nord").openPopup();
+          ssr.bindPopup("Dr. Seewoosagur Ramgoolam National Hospital").openPopup();
+          dor.bindPopup("Poudre d'or Hospital").openPopup();
+          nehru.bindPopup("Jawaharlal Nehru Hospital").openPopup();
+          mahebourg.bindPopup("Mahebourg Hospital").openPopup();
+          victoria.bindPopup("Victoria Hospital").openPopup();
+
+          L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            maxZoom: 19,
+
+            attribution: 'Map data &copy;' +
+              '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>' +
+              'contributors,<a href="https://creativecommons.org/licenses' +
+              '/by-sa/2.0/">CC-BY-SA</a>,Imagery © <a href="https://' +
+              'www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYyc' +
+              'XBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
+
+          }).addTo(mymap);
+        }
+
+        function locationError(error) {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              alert("Permission Denied-" + error.message);
+              break;
+            case error.POSITION_UNAVAILABLE:
+              alert("Position not available-" + error.message);
+              break;
+            case error.TIMEOUT:
+              alert("Request Time out-" + error.message);
+              break;
+          } //end of function
+        } //end the else block
+      }
+    }
+  </script>
+</body>
+
+</html>
